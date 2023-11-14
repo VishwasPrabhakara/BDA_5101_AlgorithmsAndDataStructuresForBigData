@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define a structure for a singly linked list node
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
+
+// Function to create a new node with a given value
+struct ListNode* createNode(int value) {
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    if (newNode == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(1);
+    }
+    newNode->val = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to merge two sorted linked lists in O(n) time
+struct ListNode* mergeSortedLists(struct ListNode* l1, struct ListNode* l2) {
+    if (l1 == NULL) {
+        return l2;
+    }
+    if (l2 == NULL) {
+        return l1;
+    }
+
+    if (l1->val < l2->val) {
+        l1->next = mergeSortedLists(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = mergeSortedLists(l1, l2->next);
+        return l2;
+    }
+}
+
+// Function to print a linked list
+void printList(struct ListNode* head) {
+    while (head != NULL) {
+        printf("%d -> ", head->val);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
+
+// Function to free memory allocated for the linked list
+void freeList(struct ListNode* head) {
+    while (head != NULL) {
+        struct ListNode* temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    // Create two sorted linked lists
+    struct ListNode* list1 = createNode(1);
+    list1->next = createNode(3);
+    list1->next->next = createNode(5);
+
+    struct ListNode* list2 = createNode(2);
+    list2->next = createNode(4);
+    list2->next->next = createNode(6);
+
+    // Print the original lists
+    printf("List 1: ");
+    printList(list1);
+    printf("List 2: ");
+    printList(list2);
+
+    // Merge the two sorted linked lists
+    struct ListNode* mergedList = mergeSortedLists(list1, list2);
+
+    // Print the merged list
+    printf("Merged List: ");
+    printList(mergedList);
+
+    // Free memory
+    freeList(mergedList);
+
+    return 0;
+}
